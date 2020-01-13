@@ -4,14 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
     tools:context=".MainActivity">
 
-<Button
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="inicio"
-    android:onClick="scanCode"
-    android:id="@+id/bStart"
-    />
+    <Button
+        android:id="@+id/bStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="scanCode"
+        android:text="@string/bNewCapture" />
+
+    <TextView
+        android:id="@+id/tBarcodeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/tBarcodeTextDefaultText"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tBarcodeType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/tBarcodeTypeDefaultText"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/bSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/bSearch" />
+
+    <Button
+        android:id="@+id/bSeeResults"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bSeeDBResults" />
 
 </LinearLayout>

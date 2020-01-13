@@ -1,23 +1,22 @@
 package com.example.barcodeprice;
 
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.zxing.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView scannerView;
     private final String[] REQUIRED_PERMISSIONS = new String[]{
             "android.permission.CAMERA",
@@ -27,14 +26,17 @@ public class MainActivity extends AppCompatActivity {
     };
     private int REQUEST_CODE_PERMISSIONS = 101;
 
-    private Button bStart;
+    private Button bStart, bSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         bStart = findViewById(R.id.bStart);
-        bStart.setEnabled(false);
+        bSearch = findViewById(R.id.bSearch);
+        
+        bSearch.setVisibility(View.GONE);
 
         if (allPermissionsGranted()) {
             bStart.setEnabled(true);
@@ -62,15 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void scanCode(View v) {
         scannerView = new ZXingScannerView(this);
-        scannerView.setResultHandler(new ZXingScannerView.ResultHandler() {
-            @Override
-            public void handleResult(Result result) {
-                String resultCode = result.getText();
-                Toast.makeText(MainActivity.this, resultCode, Toast.LENGTH_SHORT).show();
-                setContentView(R.layout.activity_main);
-                scannerView.stopCamera();
-            }
-        });
+        scannerView.setResultHandler(this);
         setContentView(scannerView);
         scannerView.startCamera();
     }
@@ -81,4 +75,26 @@ public class MainActivity extends AppCompatActivity {
         scannerView.stopCamera();
     }
 
+    @Override
+    public void handleResult(Result result) {
+        String resultText = result.getText();
+        String resultType = result.getBarcodeFormat().toString();
+        String success = getResources().getString(R.string.success);
+        Toast.makeText(MainActivity.this, success, Toast.LENGTH_LONG).show();
+        setContentView(R.layout.activity_main);
+
+        TextView tBarcodeText = findViewById(R.id.tBarcodeText);
+        TextView tBarcodeType = findViewById(R.id.tBarcodeType);
+        Button bUpdated = findViewById(R.id.bSearch);
+
+        tBarcodeText.setVisibility(View.VISIBLE);
+        tBarcodeType.setVisibility(View.VISIBLE);
+        bUpdated.setVisibility(View.VISIBLE);
+
+        tBarcodeText.setText(tBarcodeText.getText() + ": " + resultText);
+        tBarcodeType.setText(tBarcodeType.getText() + ": " + resultType);
+        bUpdated.setText(bUpdated.getText() + " " + resultText);
+
+        scannerView.stopCamera();
+    }
 }

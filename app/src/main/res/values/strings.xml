@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BarCodePrice</string>
+    <string name="bNewCapture">Nova captura</string>
+    <string name="bSearch">Buscar</string>
+    <string name="bSeeDBResults">Ver capturas</string>
+    <string name="tBarcodeTextDefaultText">CÓDIGO CAPTURADO</string>
+    <string name="tBarcodeTypeDefaultText">TIPO</string>
+    <string name="success">Novo código de barras capturado!</string>
+
 </resources>
