@@ -10,10 +10,19 @@
 
     <Button
         android:id="@+id/bStart"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#4CAF50"
         android:onClick="scanCode"
         android:text="@string/bNewCapture" />
+
+    <Button
+        android:id="@+id/bSeeResults"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#2196F3"
+        android:text="@string/bSeeDBResults" />
 
     <TextView
         android:id="@+id/tBarcodeText"
@@ -37,13 +46,8 @@
         android:id="@+id/bSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="@string/bSearch" />
-
-    <Button
-        android:id="@+id/bSeeResults"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/bSeeDBResults" />
+        android:backgroundTint="#FFC107"
+        android:text="@string/bSearch"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         bStart = findViewById(R.id.bStart);
         bSearch = findViewById(R.id.bSearch);
-        
+
         bSearch.setVisibility(View.GONE);
 
         if (allPermissionsGranted()) {
