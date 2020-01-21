@@ -11,13 +11,30 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.zxing.Result;
 
+import java.util.List;
+
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+    private RecyclerView recyclerView;
+    private Retrofit retrofit;
+    private ResultsAPI resultsAPI;
     private ZXingScannerView scannerView;
+    private String base_url;
+    private TextView tBarcodeText, tBarcodeType;
+    private ResultsRecycler resultsRecycler;
+
     private final String[] REQUIRED_PERMISSIONS = new String[]{
             "android.permission.CAMERA",
             "android.permission.INTERNET",
@@ -32,6 +49,18 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //base_url = "http://tour-pedia.org/";
+        base_url = "https://api.upcitemdb.com/";
+        tBarcodeText = findViewById(R.id.tBarcodeText);
+        tBarcodeType = findViewById(R.id.tBarcodeType);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
+
+        recyclerView = findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        //https://api.upcitemdb.com/prod/trial/lookup?upc=9781586170349
 
         bStart = findViewById(R.id.bStart);
         bSearch = findViewById(R.id.bSearch);
@@ -96,5 +125,37 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         bUpdated.setText(bUpdated.getText() + " " + resultText);
 
         scannerView.stopCamera();
+    }
+
+    public void inflateRecyclerView(View v) {
+
+        retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(base_url)
+                .build();
+
+        resultsAPI = retrofit.create(ResultsAPI.class);
+
+        String barcode = tBarcodeText.getText().toString();
+
+        Call<List<ResultsModel>> call = resultsAPI.getResultsList(barcode);
+
+        call.enqueue(new Callback<List<ResultsModel>>() {
+            @Override
+            public void onResponse(Call<List<ResultsModel>> call, Response<List<ResultsModel>> response) {
+                if (response.isSuccessful()) {
+                    resultsRecycler = new ResultsRecycler(response.body());
+                    recyclerView.setAdapter(resultsRecycler);
+                }
+                Toast.makeText(MainActivity.this, "Code: " + response.code(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<List<ResultsModel>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Erro", Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
     }
 }
