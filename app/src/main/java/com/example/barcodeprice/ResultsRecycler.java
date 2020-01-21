@@ -1,5 +1,6 @@
 package com.example.barcodeprice;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +10,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.barcodeprice.Offers;
+
 import java.util.List;
 
 public class ResultsRecycler extends RecyclerView.Adapter<ResultsRecycler.ResultsHolder> {
-    private List<ResultsModel> resultsList;
+    private List<Offers> offers;
 
-    public ResultsRecycler(List<ResultsModel> resultsList) {
-        this.resultsList = resultsList;
+    public ResultsRecycler(List<Offers> offers) {
+        this.offers = offers;
+
     }
 
     @NonNull
@@ -28,13 +32,12 @@ public class ResultsRecycler extends RecyclerView.Adapter<ResultsRecycler.Result
 
     @Override
     public void onBindViewHolder(@NonNull ResultsHolder holder, int position) {
-        holder.tTitle.setText(resultsList.get(position).title);
-
+        holder.tTitle.setText(offers.get(position).title);
     }
 
     @Override
     public int getItemCount() {
-        return resultsList.size();
+        return offers.size();
     }
 
     public class ResultsHolder extends RecyclerView.ViewHolder {

@@ -1,12 +1,5 @@
 package com.example.barcodeprice;
 
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -15,8 +8,17 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.zxing.Result;
 
+import java.util.Arrays;
 import java.util.List;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
@@ -29,11 +31,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private RecyclerView recyclerView;
     private Retrofit retrofit;
+    private String base_url;
+    private ResultsRecycler resultsRecycler;
     private ResultsAPI resultsAPI;
     private ZXingScannerView scannerView;
-    private String base_url;
-    private TextView tBarcodeText, tBarcodeType;
-    private ResultsRecycler resultsRecycler;
+    private TextView tBarcode, tBarcodeAccepted, tBarcodeLabel;
+    private Button bSearch;
 
     private final String[] REQUIRED_PERMISSIONS = new String[]{
             "android.permission.CAMERA",
@@ -43,36 +46,33 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     };
     private int REQUEST_CODE_PERMISSIONS = 101;
 
-    private Button bStart, bSearch;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        loadUIElements(false);
+        bSearch.setEnabled(false);
+        scannerView = new ZXingScannerView(this);
 
-        //base_url = "http://tour-pedia.org/";
-        base_url = "https://api.upcitemdb.com/";
-        tBarcodeText = findViewById(R.id.tBarcodeText);
-        tBarcodeType = findViewById(R.id.tBarcodeType);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
-
-        recyclerView = findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        //https://api.upcitemdb.com/prod/trial/lookup?upc=9781586170349
-
-        bStart = findViewById(R.id.bStart);
-        bSearch = findViewById(R.id.bSearch);
-
-        bSearch.setVisibility(View.GONE);
-
-        if (allPermissionsGranted()) {
-            bStart.setEnabled(true);
-        } else {
+        if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
+    }
 
+    public void scanCode(View v) {
+        scannerView.setResultHandler(this);
+        setContentView(scannerView);
+        scannerView.startCamera();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        scannerView.stopCamera();
+    }
+
+    public void setBarcodeText(String barcode, TextView textView) {
+        textView.setText(barcode);
     }
 
     @Override
@@ -91,43 +91,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         return true;
     }
 
-    public void scanCode(View v) {
-        scannerView = new ZXingScannerView(this);
-        scannerView.setResultHandler(this);
-        setContentView(scannerView);
-        scannerView.startCamera();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        scannerView.stopCamera();
-    }
-
-    @Override
-    public void handleResult(Result result) {
-        String resultText = result.getText();
-        String resultType = result.getBarcodeFormat().toString();
-        String success = getResources().getString(R.string.success);
-        Toast.makeText(MainActivity.this, success, Toast.LENGTH_LONG).show();
-        setContentView(R.layout.activity_main);
-
-        TextView tBarcodeText = findViewById(R.id.tBarcodeText);
-        TextView tBarcodeType = findViewById(R.id.tBarcodeType);
-        Button bUpdated = findViewById(R.id.bSearch);
-
-        tBarcodeText.setVisibility(View.VISIBLE);
-        tBarcodeType.setVisibility(View.VISIBLE);
-        bUpdated.setVisibility(View.VISIBLE);
-
-        tBarcodeText.setText(tBarcodeText.getText() + ": " + resultText);
-        tBarcodeType.setText(tBarcodeType.getText() + ": " + resultType);
-        bUpdated.setText(bUpdated.getText() + " " + resultText);
-
-        scannerView.stopCamera();
-    }
-
-    public void inflateRecyclerView(View v) {
+    public void inflateRecyclerView(View view) {
 
         retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
@@ -135,27 +99,80 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 .build();
 
         resultsAPI = retrofit.create(ResultsAPI.class);
+        String barcode = tBarcode.getText().toString();
 
-        String barcode = tBarcodeText.getText().toString();
+        Call<ResultsModel> call = resultsAPI.getResultsList(barcode);
 
-        Call<List<ResultsModel>> call = resultsAPI.getResultsList(barcode);
-
-        call.enqueue(new Callback<List<ResultsModel>>() {
+        call.enqueue(new Callback<ResultsModel>() {
             @Override
-            public void onResponse(Call<List<ResultsModel>> call, Response<List<ResultsModel>> response) {
-                if (response.isSuccessful()) {
-                    resultsRecycler = new ResultsRecycler(response.body());
-                    recyclerView.setAdapter(resultsRecycler);
+            public void onResponse(Call<ResultsModel> call, Response<ResultsModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        List<Offers> offers = response.body().items.get(0).offers;
+                        if (offers.size() > 0) {
+                            resultsRecycler = new ResultsRecycler(offers);
+                            recyclerView.setAdapter(resultsRecycler);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this, "Sem lojas disponíveis", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                Toast.makeText(MainActivity.this, "Code: " + response.code(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Status code: " + response.code(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFailure(Call<List<ResultsModel>> call, Throwable t) {
+            public void onFailure(Call<ResultsModel> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "Erro", Toast.LENGTH_SHORT).show();
 
             }
-
         });
+
     }
+
+    public void loadUIElements(boolean visible) {
+
+        recyclerView = findViewById(R.id.recyclerView);
+        base_url = "https://api.upcitemdb.com/";
+        tBarcode = findViewById(R.id.tBarcode);
+        tBarcodeAccepted = findViewById(R.id.tBarcodeAccepted);
+        tBarcodeLabel = findViewById(R.id.tBarcodeLabel);
+        bSearch = findViewById(R.id.bSearch);
+
+        if (!visible) {
+            tBarcode.setVisibility(View.GONE);
+            tBarcodeAccepted.setVisibility(View.GONE);
+            tBarcodeLabel.setVisibility(View.GONE);
+        }
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        recyclerView.addItemDecoration(dividerItemDecoration);
+    }
+
+    @Override
+    public void handleResult(Result result) {
+        String resultText = result.getText();
+        String resultType = result.getBarcodeFormat().toString();
+        Toast.makeText(MainActivity.this, "Capturado código tipo: " + resultType, Toast.LENGTH_LONG).show();
+        setContentView(R.layout.activity_main);
+        String isValid = "VÁLIDO";
+        loadUIElements(true);
+
+        String[] validCodesTemp = {"EAN_13", "EAN_18", "ISBN", "UPC"};
+        List<String> validCodes = Arrays.asList(validCodesTemp);
+
+
+        if (!validCodes.contains(resultType)) {
+            bSearch.setEnabled(false);
+            isValid = "INVÁLIDO";
+        }
+        String msg = "Código de barras tipo " + resultType + isValid + " para consulta.";
+
+        tBarcodeAccepted.setText(msg);
+
+        setBarcodeText(resultText, tBarcode);
+
+        scannerView.stopCamera();
+    }
+
 }
