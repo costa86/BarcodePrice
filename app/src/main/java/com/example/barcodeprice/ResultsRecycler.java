@@ -1,5 +1,6 @@
 package com.example.barcodeprice;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.format.DateFormat;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ShareCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -91,6 +93,21 @@ public class ResultsRecycler extends RecyclerView.Adapter<ResultsRecycler.Result
                     Toast.makeText(itemView.getContext(), res, Toast.LENGTH_LONG).show();
                 }
 
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    String mimeType = "text/plain";
+                    ShareCompat.IntentBuilder
+                            .from((Activity) v.getContext())
+                            .setType(mimeType)
+                            .setChooserTitle("Partilhar " + tTitle.getText())
+                            .setText(String.format("%s \nPor %s %s\n%s", tTitle.getText()
+                                    , tPrice.getText(), tCurrency.getText(), tLink.getText()))
+                            .startChooser();
+                    return false;
+                }
             });
 
         }
