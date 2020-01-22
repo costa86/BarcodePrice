@@ -9,6 +9,18 @@
     tools:context=".MainActivity">
 
 
+    <TextView
+        android:id="@+id/tLat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LAT" />
+
+    <TextView
+        android:id="@+id/tLon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LON" />
+
     <Button
         android:id="@+id/bNewCapture"
         android:layout_width="match_parent"

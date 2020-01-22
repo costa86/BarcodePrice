@@ -8,17 +8,16 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.zxing.Result;
 
 import java.util.Arrays;
@@ -38,8 +37,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private ResultsRecycler resultsRecycler;
     private ResultsAPI resultsAPI;
     private ZXingScannerView scannerView;
-    private TextView tBarcode, tBarcodeAccepted, tBarcodeLabel;
+    private TextView tBarcode, tBarcodeAccepted, tBarcodeLabel, tLat, tLon;
     private Button bSearch;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
 
     private final String[] REQUIRED_PERMISSIONS = new String[]{
             "android.permission.CAMERA",
@@ -56,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         loadUIElements(false);
         bSearch.setEnabled(false);
         scannerView = new ZXingScannerView(this);
+
+        fusedLocationProviderClient = new FusedLocationProviderClient(this);
+
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
@@ -135,7 +140,24 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     }
 
+    public void getCoord() {
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                tLat.setText("nada");
+                tLon.setText("nada");
+                if (location != null) {
+                    tLat.setText(String.valueOf(location.getLatitude()));
+                    tLon.setText(String.valueOf(location.getLongitude()));
+                }
+            }
+        });
+
+    }
+
     public void loadUIElements(boolean visible) {
+        tLat = findViewById(R.id.tLat);
+        tLon = findViewById(R.id.tLon);
 
         recyclerView = findViewById(R.id.recyclerView);
         base_url = "https://api.upcitemdb.com/";
@@ -163,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         setContentView(R.layout.activity_main);
         String isValid = "válido";
         loadUIElements(true);
+        getCoord();
 
         String[] validCodesTemp = {"EAN_13", "EAN_8", "ISBN", "UPC_E", "UPC_A"};
         List<String> validCodes = Arrays.asList(validCodesTemp);
