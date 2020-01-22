@@ -1,9 +1,7 @@
 package com.example.barcodeprice;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ShareCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class ResultsRecycler extends RecyclerView.Adapter<ResultsRecycler.ResultsHolder> {
@@ -47,16 +42,11 @@ public class ResultsRecycler extends RecyclerView.Adapter<ResultsRecycler.Result
         holder.tCondition.setText(offers.get(position).condition);
         holder.tLink.setText(offers.get(position).link);
         holder.tPrice.setText(String.valueOf(offers.get(position).price));
-        holder.tUpdated_t.setText(secondsToDate(dateL, "EEE, dd/MMM/yy"));
+        holder.tUpdated_t.setText(Helpers.secondsToDate(dateL, "EEE, dd/MMM/yy"));
         holder.tXOfY.setText(pos + "/" + getItemCount());
 
     }
 
-    public String secondsToDate(long seconds, String pattern) {
-        Date date = new Date(seconds * 1000L);
-        SimpleDateFormat jdf = new SimpleDateFormat(pattern);
-        return jdf.format(date);
-    }
 
     @Override
     public int getItemCount() {
@@ -98,20 +88,18 @@ public class ResultsRecycler extends RecyclerView.Adapter<ResultsRecycler.Result
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    String mimeType = "text/plain";
-                    ShareCompat.IntentBuilder
-                            .from((Activity) v.getContext())
-                            .setType(mimeType)
-                            .setChooserTitle("Partilhar " + tTitle.getText())
-                            .setText(String.format("%s \nPor %s %s\n%s", tTitle.getText()
-                                    , tPrice.getText(), tCurrency.getText(), tLink.getText()))
-                            .startChooser();
+                    String title = "Partilhar " + tTitle.getText();
+
+                    String text = String.format("%s \nPor %s %s\n%s", tTitle.getText()
+                            , tPrice.getText(), tCurrency.getText(), tLink.getText());
+
+                    Helpers.shareThis(v.getContext(), title, text);
+
                     return false;
                 }
             });
 
         }
-
 
     }
 }
