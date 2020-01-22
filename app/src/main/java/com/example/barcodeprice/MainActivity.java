@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         String resultType = result.getBarcodeFormat().toString();
         Toast.makeText(MainActivity.this, "Capturado código tipo: " + resultType, Toast.LENGTH_LONG).show();
         setContentView(R.layout.activity_main);
-        String isValid = "VÁLIDO";
+        String isValid = "válido";
         loadUIElements(true);
 
         String[] validCodesTemp = {"EAN_13", "EAN_8", "ISBN", "UPC_E","UPC_A"};
@@ -168,9 +168,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         if (!validCodes.contains(resultType)) {
             bSearch.setEnabled(false);
-            isValid = "INVÁLIDO";
+            isValid = "inválido";
         }
-        String msg = "Código de barras tipo " + resultType + " " + isValid + " para consulta.";
+        String msg = resultType + ": " + "tipo de código " + isValid + " para consulta.";
 
         tBarcodeAccepted.setText(msg);
 
