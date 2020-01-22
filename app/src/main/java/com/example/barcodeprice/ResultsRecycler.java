@@ -40,15 +40,15 @@ public class ResultsRecycler extends RecyclerView.Adapter<ResultsRecycler.Result
         String currency = (String.valueOf(offers.get(position).currency).equals("")) ? "USD" : String.valueOf(offers.get(position).currency);
         long dateL = offers.get(position).updated_t;
 
-        holder.tTitle.setText("Titulo: " + offers.get(position).title);
-        holder.tMerchant.setText("Loja: " + offers.get(position).merchant);
-        holder.tDomain.setText("Site: " + offers.get(position).domain);
-        holder.tCurrency.setText("Moeda: " + currency);
-        holder.tCondition.setText("Estado: " + offers.get(position).condition);
+        holder.tTitle.setText(offers.get(position).title);
+        holder.tMerchant.setText(offers.get(position).merchant);
+        holder.tDomain.setText(offers.get(position).domain);
+        holder.tCurrency.setText(currency);
+        holder.tCondition.setText(offers.get(position).condition);
         holder.tLink.setText(offers.get(position).link);
-        holder.tPrice.setText("Preço: " + offers.get(position).price);
-        holder.tUpdated_t.setText("Atualizado a: " + secondsToDate(dateL, "EEE, dd/MMM/yy"));
-        holder.tXOfY.setText("Resultado " + pos + "/" + getItemCount());
+        holder.tPrice.setText(String.valueOf(offers.get(position).price));
+        holder.tUpdated_t.setText(secondsToDate(dateL, "EEE, dd/MMM/yy"));
+        holder.tXOfY.setText(pos + "/" + getItemCount());
 
     }
 

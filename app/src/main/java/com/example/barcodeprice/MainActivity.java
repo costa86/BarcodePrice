@@ -121,12 +121,14 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                         Toast.makeText(MainActivity.this, "Sem lojas disponíveis", Toast.LENGTH_SHORT).show();
                     }
                 }
-                Toast.makeText(MainActivity.this, "Status code: " + response.code(), Toast.LENGTH_SHORT).show();
+                if (response.code() != 200) {
+                    Toast.makeText(MainActivity.this, "Problemas na requisição: código " + response.code(), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<ResultsModel> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Erro", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Erro na requisição", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -153,7 +155,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
 
-
     @Override
     public void handleResult(Result result) {
         String resultText = result.getText();
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         String isValid = "válido";
         loadUIElements(true);
 
-        String[] validCodesTemp = {"EAN_13", "EAN_8", "ISBN", "UPC_E","UPC_A"};
+        String[] validCodesTemp = {"EAN_13", "EAN_8", "ISBN", "UPC_E", "UPC_A"};
         List<String> validCodes = Arrays.asList(validCodesTemp);
 
         if (!validCodes.contains(resultType)) {
