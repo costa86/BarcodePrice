@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -65,6 +66,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
         }
+    }
+
+    public void viewCapturas(View v){
+        Intent intent = new Intent(MainActivity.this,CapturaRecords.class);
+        startActivity(intent);
     }
 
     public void scanCode(View v) {

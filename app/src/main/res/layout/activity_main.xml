@@ -38,6 +38,7 @@
         android:id="@+id/bSeeRecords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="viewCapturas"
         android:text="Ver resultados" />
 
     <TextView

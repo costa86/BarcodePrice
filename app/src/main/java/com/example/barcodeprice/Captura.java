@@ -17,6 +17,10 @@ public class Captura {
         this.note = note;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getLat() {
         return lat;
     }
