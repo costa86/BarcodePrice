@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -16,6 +17,8 @@ import java.util.List;
 public class CapturaRecords extends AppCompatActivity {
     RecyclerView recyclerView;
     CapturaViewModel capturaViewModel;
+    public static final String EXTRA_BARCODE = "com.example.barcodeprice.extra.BARCODE";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,10 @@ public class CapturaRecords extends AppCompatActivity {
         capturaAdapter.setOnItemClickListener(new CapturaAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Captura captura) {
-                Toast.makeText(CapturaRecords.this, captura.getBarcode(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(CapturaRecords.this,MainActivity.class);
+                intent.putExtra(EXTRA_BARCODE,captura.getBarcode());
+                //Toast.makeText(CapturaRecords.this, captura.getBarcode(), Toast.LENGTH_SHORT).show();
+                startActivity(intent);
             }
         });
 

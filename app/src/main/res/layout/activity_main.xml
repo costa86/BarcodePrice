@@ -83,7 +83,6 @@
         android:id="@+id/bSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="inflateRecyclerView"
         android:text="Pesquisar" />
 
     <androidx.recyclerview.widget.RecyclerView

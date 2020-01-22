@@ -62,6 +62,13 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         loadUIElements(false);
         scannerView = new ZXingScannerView(this);
 
+        Intent intent = getIntent();
+        String receivedBarcode = intent.getStringExtra(CapturaRecords.EXTRA_BARCODE);
+        if (receivedBarcode != null) {
+            inflateRecyclerView(receivedBarcode);
+        }
+
+
         fusedLocationProviderClient = new FusedLocationProviderClient(this);
         capturaViewModel = ViewModelProviders.of(this).get(CapturaViewModel.class);
 
@@ -72,8 +79,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         }
     }
 
-    public void viewCapturas(View v){
-        Intent intent = new Intent(MainActivity.this,CapturaRecords.class);
+    public void viewCapturas(View v) {
+        Intent intent = new Intent(MainActivity.this, CapturaRecords.class);
         startActivity(intent);
     }
 
@@ -109,11 +116,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         return true;
     }
 
-    public void saveCaptura(View v){
+    public void saveCaptura(View v) {
         String note = eNote.getText().toString().isEmpty() ? "nota" : eNote.getText().toString();
 
-        Captura captura = new Captura(tLat.getText().toString(),tLon.getText().toString()
-                ,tBarcode.getText().toString(),note);
+        Captura captura = new Captura(tLat.getText().toString(), tLon.getText().toString()
+                , tBarcode.getText().toString(), note);
 
         capturaViewModel.insert(captura);
         eNote.setVisibility(View.GONE);
@@ -121,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         Toast.makeText(this, "Captura " + note + " salva com sucesso", Toast.LENGTH_SHORT).show();
     }
 
-    public void inflateRecyclerView(View view) {
+    public void inflateRecyclerView(String barcode) {
 
         retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
@@ -129,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 .build();
 
         resultsAPI = retrofit.create(ResultsAPI.class);
-        String barcode = tBarcode.getText().toString();
+        //String barcode = tBarcode.getText().toString();
 
         Call<ResultsModel> call = resultsAPI.getResultsList(barcode);
 
@@ -199,6 +206,14 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             bSave.setEnabled(false);
 
         }
+
+        bSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inflateRecyclerView(tBarcode.getText().toString());
+            }
+        });
+
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.addItemDecoration(dividerItemDecoration);
