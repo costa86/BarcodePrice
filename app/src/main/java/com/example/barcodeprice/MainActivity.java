@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private ResultsAPI resultsAPI;
     private ZXingScannerView scannerView;
     private TextView tBarcode, tBarcodeAccepted, tBarcodeLabel, tLat, tLon;
-    private Button bSearch;
+    private Button bSearch, bSave;
     private CapturaViewModel capturaViewModel;
     private EditText eNote;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loadUIElements(false);
-        bSearch.setEnabled(false);
         scannerView = new ZXingScannerView(this);
 
         fusedLocationProviderClient = new FusedLocationProviderClient(this);
@@ -69,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS);
+            finish();
         }
     }
 
@@ -110,11 +110,15 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
     public void saveCaptura(View v){
-        Captura captura = new Captura(tLat.getText().toString(),tLon.getText().toString()
-                ,tBarcode.getText().toString(),eNote.getText().toString());
-        capturaViewModel.insert(captura);
-        Toast.makeText(this, "Captura salva com sucesso", Toast.LENGTH_SHORT).show();
+        String note = eNote.getText().toString().isEmpty() ? "nota" : eNote.getText().toString();
 
+        Captura captura = new Captura(tLat.getText().toString(),tLon.getText().toString()
+                ,tBarcode.getText().toString(),note);
+
+        capturaViewModel.insert(captura);
+        eNote.setVisibility(View.GONE);
+        bSave.setEnabled(false);
+        Toast.makeText(this, "Captura " + note + " salva com sucesso", Toast.LENGTH_SHORT).show();
     }
 
     public void inflateRecyclerView(View view) {
@@ -184,11 +188,16 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         tBarcodeAccepted = findViewById(R.id.tBarcodeAccepted);
         tBarcodeLabel = findViewById(R.id.tBarcodeLabel);
         bSearch = findViewById(R.id.bSearch);
+        bSave = findViewById(R.id.bSave);
 
         if (!visible) {
             tBarcode.setVisibility(View.GONE);
             tBarcodeAccepted.setVisibility(View.GONE);
             tBarcodeLabel.setVisibility(View.GONE);
+            eNote.setVisibility(View.GONE);
+            bSearch.setEnabled(false);
+            bSave.setEnabled(false);
+
         }
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));

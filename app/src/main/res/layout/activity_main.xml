@@ -13,13 +13,15 @@
         android:id="@+id/tLat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LAT" />
+        android:text="LAT"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tLon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LON" />
+        android:text="LON"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/bNewCapture"
@@ -33,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Nota"
+        android:hint="Escreva uma nota sobre essa captura"
         android:inputType="textPersonName" />
 
     <Button
