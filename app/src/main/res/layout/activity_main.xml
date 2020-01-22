@@ -29,6 +29,12 @@
         android:text="Nova captura" />
 
     <Button
+        android:id="@+id/bSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="salvar" />
+
+    <Button
         android:id="@+id/bSeeRecords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

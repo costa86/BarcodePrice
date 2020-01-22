@@ -32,14 +32,20 @@ public class ResultsRecycler extends RecyclerView.Adapter<ResultsRecycler.Result
     @Override
     public void onBindViewHolder(@NonNull ResultsHolder holder, int position) {
         String pos = String.valueOf(position + 1);
+
+        //assumir moeda ausente como sendo USD. documentacao diz isso
         String currency = (String.valueOf(offers.get(position).currency).equals("")) ? "USD" : String.valueOf(offers.get(position).currency);
+
         long dateL = offers.get(position).updated_t;
+
+        //traduzir condition para "novo" ou "usado"
+        String condition = (String.valueOf(offers.get(position).condition).equals("New") ? "Novo" : "Usado");
 
         holder.tTitle.setText(offers.get(position).title);
         holder.tMerchant.setText(offers.get(position).merchant);
         holder.tDomain.setText(offers.get(position).domain);
         holder.tCurrency.setText(currency);
-        holder.tCondition.setText(offers.get(position).condition);
+        holder.tCondition.setText(condition);
         holder.tLink.setText(offers.get(position).link);
         holder.tPrice.setText(String.valueOf(offers.get(position).price));
         holder.tUpdated_t.setText(Helpers.secondsToDate(dateL, "EEE, dd/MMM/yy"));
