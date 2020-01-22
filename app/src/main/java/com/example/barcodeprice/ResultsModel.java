@@ -12,9 +12,13 @@ public class ResultsModel {
 class Item {
     String ean, title, description;
     List<Offers> offers;
+    double lowest_recorded_price, highest_recorded_price;
+    List<String> images;
 
 }
 
 class Offers {
-    String merchant, domain, title;
+    String merchant, domain, title, currency, condition, link;
+    double price;
+    Long updated_t;
 }

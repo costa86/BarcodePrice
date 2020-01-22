@@ -8,8 +8,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -149,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
+
+
     @Override
     public void handleResult(Result result) {
         String resultText = result.getText();
@@ -158,15 +163,14 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         String isValid = "VÁLIDO";
         loadUIElements(true);
 
-        String[] validCodesTemp = {"EAN_13", "EAN_18", "ISBN", "UPC"};
+        String[] validCodesTemp = {"EAN_13", "EAN_8", "ISBN", "UPC_E","UPC_A"};
         List<String> validCodes = Arrays.asList(validCodesTemp);
-
 
         if (!validCodes.contains(resultType)) {
             bSearch.setEnabled(false);
             isValid = "INVÁLIDO";
         }
-        String msg = "Código de barras tipo " + resultType + isValid + " para consulta.";
+        String msg = "Código de barras tipo " + resultType + " " + isValid + " para consulta.";
 
         tBarcodeAccepted.setText(msg);
 
