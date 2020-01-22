@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private ZXingScannerView scannerView;
     private TextView tBarcode, tBarcodeAccepted, tBarcodeLabel, tLat, tLon;
     private Button bSearch;
-
+    private CapturaViewModel capturaViewModel;
+    private EditText eNote;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
 
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         scannerView = new ZXingScannerView(this);
 
         fusedLocationProviderClient = new FusedLocationProviderClient(this);
+        capturaViewModel = ViewModelProviders.of(this).get(CapturaViewModel.class);
 
 
         if (!allPermissionsGranted()) {
@@ -103,6 +107,14 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             }
         }
         return true;
+    }
+
+    public void saveCaptura(View v){
+        Captura captura = new Captura(tLat.getText().toString(),tLon.getText().toString()
+                ,tBarcode.getText().toString(),eNote.getText().toString());
+        capturaViewModel.insert(captura);
+        Toast.makeText(this, "Captura salva com sucesso", Toast.LENGTH_SHORT).show();
+
     }
 
     public void inflateRecyclerView(View view) {
@@ -164,8 +176,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     public void loadUIElements(boolean visible) {
         tLat = findViewById(R.id.tLat);
         tLon = findViewById(R.id.tLon);
-
+        eNote = findViewById(R.id.eNote);
         recyclerView = findViewById(R.id.recyclerView);
+
         base_url = "https://api.upcitemdb.com/";
         tBarcode = findViewById(R.id.tBarcode);
         tBarcodeAccepted = findViewById(R.id.tBarcodeAccepted);

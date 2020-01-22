@@ -28,10 +28,19 @@
         android:onClick="scanCode"
         android:text="Nova captura" />
 
+    <EditText
+        android:id="@+id/eNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Nota"
+        android:inputType="textPersonName" />
+
     <Button
         android:id="@+id/bSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="saveCaptura"
         android:text="salvar" />
 
     <Button
