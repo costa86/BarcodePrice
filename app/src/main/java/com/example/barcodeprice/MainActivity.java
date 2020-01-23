@@ -124,7 +124,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
         capturaViewModel.insert(captura);
         eNote.setVisibility(View.GONE);
-        bSave.setEnabled(false);
+        bSave.setVisibility(View.GONE);
+        bSearch.setVisibility(View.GONE);
+        tBarcode.setVisibility(View.GONE);
+        tBarcodeAccepted.setVisibility(View.GONE);
+        tBarcodeLabel.setVisibility(View.GONE);
         Toast.makeText(this, "Captura " + note + " salva com sucesso", Toast.LENGTH_SHORT).show();
     }
 
@@ -136,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 .build();
 
         resultsAPI = retrofit.create(ResultsAPI.class);
-        //String barcode = tBarcode.getText().toString();
 
         Call<ResultsModel> call = resultsAPI.getResultsList(barcode);
 
@@ -149,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                         if (offers.size() > 0) {
                             resultsRecycler = new ResultsRecycler(offers);
                             recyclerView.setAdapter(resultsRecycler);
+                            bSearch.setVisibility(View.GONE);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -202,8 +206,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             tBarcodeAccepted.setVisibility(View.GONE);
             tBarcodeLabel.setVisibility(View.GONE);
             eNote.setVisibility(View.GONE);
-            bSearch.setEnabled(false);
-            bSave.setEnabled(false);
+            bSearch.setVisibility(View.GONE);
+            bSave.setVisibility(View.GONE);
 
         }
 
@@ -211,6 +215,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             @Override
             public void onClick(View v) {
                 inflateRecyclerView(tBarcode.getText().toString());
+                tBarcode.setVisibility(View.GONE);
+                tBarcodeAccepted.setVisibility(View.GONE);
+                tBarcodeLabel.setVisibility(View.GONE);
             }
         });
 
@@ -234,7 +241,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         List<String> validCodes = Arrays.asList(validCodesTemp);
 
         if (!validCodes.contains(resultType)) {
-            bSearch.setEnabled(false);
+            bSearch.setVisibility(View.GONE);
+            bSave.setVisibility(View.GONE);
+            eNote.setVisibility(View.GONE);
             isValid = "inválido";
         }
         String msg = resultType + ": " + "tipo de código " + isValid + " para consulta.";

@@ -23,12 +23,64 @@
         android:text="LON"
         android:visibility="gone" />
 
+    <ImageView
+        android:id="@+id/iBarcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_barcode" />
+
+    <TextView
+        android:id="@+id/tWelcome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pesquise preços de produtos em lojas online através da leitura de códigos de barras!"
+        android:textAlignment="center"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tBarcodeLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CÓDIGO IDENTIFICADO:"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tBarcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tBarcodeAccepted"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold" />
+
     <Button
         android:id="@+id/bNewCapture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="scanCode"
         android:text="Nova captura" />
+
+    <Button
+        android:id="@+id/bSeeRecords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="viewCapturas"
+        android:text="ver capturas" />
 
     <EditText
         android:id="@+id/eNote"
@@ -44,40 +96,6 @@
         android:layout_height="wrap_content"
         android:onClick="saveCaptura"
         android:text="salvar" />
-
-    <Button
-        android:id="@+id/bSeeRecords"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="viewCapturas"
-        android:text="Ver resultados" />
-
-    <TextView
-        android:id="@+id/tBarcodeLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Código identificado:"
-        android:textAlignment="center"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tBarcode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tBarcodeAccepted"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textStyle="bold" />
 
     <Button
         android:id="@+id/bSearch"
